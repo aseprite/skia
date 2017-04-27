@@ -125,7 +125,7 @@ void GrConfigConversionEffect::onComputeInvariantOutput(GrInvariantOutput* inout
 
 GR_DEFINE_FRAGMENT_PROCESSOR_TEST(GrConfigConversionEffect);
 
-#if !defined(__clang__) && _MSC_FULL_VER >= 190024213
+#if !defined(__clang__) && _MSC_FULL_VER >= 190024210
 // Work around VS 2015 Update 3 optimizer bug that causes internal compiler error
 //https://connect.microsoft.com/VisualStudio/feedback/details/3100520/internal-compiler-error
 #pragma optimize("t", off)
@@ -142,7 +142,7 @@ sk_sp<GrFragmentProcessor> GrConfigConversionEffect::TestCreate(GrProcessorTestD
                                      swizzle, pmConv, GrTest::TestMatrix(d->fRandom)));
 }
 
-#if !defined(__clang__) && _MSC_FULL_VER >= 190024213
+#if !defined(__clang__) && _MSC_FULL_VER >= 190024210
 // Restore optimization settings.
 #pragma optimize("", on)
 #endif

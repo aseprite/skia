@@ -34,6 +34,8 @@ if command -v lsb_release > /dev/null ; then
 		libglu1-mesa-dev
 		libpng-dev
 		libqt4-dev
+		libjpeg-dev
+		libwebp-dev
 		EOF
             )
            if [ $(lsb_release -r -s) = '14.04' ] ; then

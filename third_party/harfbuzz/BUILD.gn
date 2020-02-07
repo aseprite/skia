@@ -25,8 +25,9 @@ if (skia_use_system_harfbuzz) {
       ".",
       _src,
     ]
+    include_dirs = [ "../externals/freetype/include" ]
     defines = [
-      #"HAVE_FREETYPE",
+      "HAVE_FREETYPE",
       #"HAVE_ICU",
       #"HAVE_ICU_BUILTIN",
       "HAVE_OT",
@@ -200,6 +201,9 @@ if (skia_use_system_harfbuzz) {
       "$_src/hb-face.hh",
       "$_src/hb-font.cc",
       "$_src/hb-font.hh",
+      "$_src/hb-ft-colr.hh",
+      "$_src/hb-ft.cc",
+      "$_src/hb-ft.h",
       "$_src/hb-geometry.hh",
       "$_src/hb-iter.hh",
       "$_src/hb-kern.hh",
@@ -382,9 +386,6 @@ if (skia_use_system_harfbuzz) {
       "$_src/hb-directwrite.cc",
       "$_src/hb-directwrite.h",
       "$_src/hb-fallback-shape.cc",
-      "$_src/hb-ft-colr.hh",
-      "$_src/hb-ft.cc",
-      "$_src/hb-ft.h",
       "$_src/hb-gdi.cc",
       "$_src/hb-gdi.h",
       "$_src/hb-glib.cc",

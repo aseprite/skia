@@ -1,0 +1,132 @@
+name: Build
+on: push
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-18.04]
+        mode: [Release, Debug]
+        arch: [x64, x86, arm64]
+        exclude:
+          - os: macos-latest
+            arch: x86
+          - os: windows-latest
+            arch: arm64
+          - os: ubuntu-18.04
+            arch: arm64
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          choco install llvm
+          choco install zip
+        elif [[ "${{ runner.os }}" == "macOS" ]] ; then
+          brew install coreutils
+        else
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            git g++ g++-multilib clang-10 libc++-10-dev pandoc dpkg-dev \
+            libcurl4-openssl-dev libgif-dev libjpeg-dev \
+            libz-dev libpng-dev libtinyxml-dev libpixman-1-dev \
+            libx11-dev libxcursor-dev ninja-build zip unzip \
+            libfontconfig-dev libgl1-mesa-dev
+        fi
+    - name: Download depot_tools
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      run: |
+        git clone 'https://chromium.googlesource.com/chromium/tools/depot_tools.git'
+        echo "::add-path::${PWD}/depot_tools"
+    - name: Sync Deps
+      run: python tools/git-sync-deps
+    - name: Generating Ninja Files
+      shell: bash
+      run: |
+        if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
+          export is_debug=true
+          export is_official=false
+        else
+          export is_debug=false
+          export is_official=true
+        fi
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          export gn_flags='win_vc="C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC" win_toolchain_version="15.0" win_sdk="C:\\Program Files (x86)\\Windows Kits\\10" win_sdk_version="10.0.18362.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="9.0.0"'
+          if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
+            export gn_flags="$gn_flags extra_cflags=[\"-MTd\"]"
+          else
+            export gn_flags="$gn_flags extra_cflags=[\"-MT\"]"
+          fi
+        elif [[ "${{ runner.os }}" == "macOS" ]] ; then
+          if [[ "${{ matrix.arch }}" == arm64 ]] ; then
+            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=11.0"] extra_cflags_cc=["-frtti"]'
+          else
+            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.9"] extra_cflags_cc=["-frtti"]'
+          fi
+        else
+          export gn_flags='cc="clang-10" cxx="clang++-10" extra_cflags_cc=["-stdlib=libc++"] extra_ldflags=["-stdlib=libc++"]'
+        fi
+        gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
+    - name: Compiling
+      run: ninja -C out/${{ matrix.mode }}-${{ matrix.arch }} skia modules
+    - name: Copying Files
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          export libext=lib
+        else
+          export libext=a
+        fi
+        if [[ "${{ runner.os }}" == "macOS" ]] ; then
+          export cp=gcp
+        else
+          export cp=cp
+        fi
+        export dst=Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+        mkdir $dst
+        $cp -R --parents \
+          out/${{ matrix.mode }}-${{ matrix.arch }}/*.$libext \
+          include \
+          modules/particles/include/*.h \
+          modules/skottie/include/*.h \
+          modules/skparagraph/include/*.h \
+          modules/skplaintexteditor/include/*.h \
+          modules/skresources/include/*.h \
+          modules/sksg/include/*.h \
+          modules/skshaper/include/*.h \
+          src/core/*.h \
+          src/gpu/gl/*.h \
+          third_party/externals/angle2/LICENSE \
+          third_party/externals/angle2/include \
+          third_party/externals/freetype/docs/FTL.TXT \
+          third_party/externals/freetype/docs/GPLv2.TXT \
+          third_party/externals/freetype/LICENSE.TXT \
+          third_party/externals/freetype/include \
+          third_party/externals/libpng/LICENSE \
+          third_party/externals/libpng/*.h \
+          third_party/externals/libwebp/COPYING \
+          third_party/externals/libwebp/PATENTS \
+          third_party/externals/libwebp/src/dec/*.h \
+          third_party/externals/libwebp/src/dsp/*.h \
+          third_party/externals/libwebp/src/enc/*.h \
+          third_party/externals/libwebp/src/mux/*.h \
+          third_party/externals/libwebp/src/utils/*.h \
+          third_party/externals/libwebp/src/webp/*.h \
+          third_party/externals/harfbuzz/COPYING \
+          third_party/externals/harfbuzz/src/*.h \
+          third_party/externals/swiftshader/LICENSE.txt \
+          third_party/externals/swiftshader/include \
+          third_party/externals/zlib/LICENSE \
+          third_party/externals/zlib/*.h \
+          $dst
+    - name: Uploading Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+        path: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}

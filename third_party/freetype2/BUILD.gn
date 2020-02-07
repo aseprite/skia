@@ -63,6 +63,11 @@ if (skia_use_system_freetype2) {
       public_defines += [ "FT_CONFIG_OPTION_USE_BROTLI" ]
     }
 
+    # We need to link with the zlib library (the system one or a
+    # static one) to avoid multiple definitions of crc32 and inflate
+    # functions between zlib and freetype
+    defines += [ "FT_CONFIG_OPTION_SYSTEM_ZLIB" ]
+
     sources = [
       "../externals/freetype/src/autofit/autofit.c",
       "../externals/freetype/src/base/ftbase.c",

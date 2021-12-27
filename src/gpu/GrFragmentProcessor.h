@@ -678,11 +678,11 @@ private:
 GR_MAKE_BITFIELD_OPS(GrFragmentProcessor::OptimizationFlags)
 
 static inline GrFPResult GrFPFailure(std::unique_ptr<GrFragmentProcessor> fp) {
-    return {false, std::move(fp)};
+    return GrFPResult(false, std::move(fp));
 }
 static inline GrFPResult GrFPSuccess(std::unique_ptr<GrFragmentProcessor> fp) {
     SkASSERT(fp);
-    return {true, std::move(fp)};
+    return GrFPResult(true, std::move(fp));
 }
 
 #endif

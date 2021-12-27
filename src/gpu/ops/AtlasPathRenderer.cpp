@@ -28,7 +28,7 @@ namespace {
 // Returns the rect [topLeftFloor, botRightCeil], which is the rect [r] rounded out to integer
 // boundaries.
 std::tuple<float2,float2> round_out(const SkRect& r) {
-    return {skvx::floor(float2::Load(&r.fLeft)), skvx::ceil(float2::Load(&r.fRight))};
+    return std::make_tuple(skvx::floor(float2::Load(&r.fLeft)), skvx::ceil(float2::Load(&r.fRight)));
 }
 
 // Returns whether the given proxyOwner uses the atlasProxy.

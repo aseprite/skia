@@ -1565,7 +1565,7 @@ private:
             // (SkPath::injectMoveToIfNeeded should have guaranteed this to be the case.)
             int backset = pts_backset_for_verb(verb);
             SkASSERT(fPoints + backset >= fInitialPoints);
-            return {verb, fPoints + backset, fWeights};
+            return std::make_tuple(verb, fPoints + backset, fWeights);
         }
     private:
         constexpr static int pts_advance_after_verb(SkPathVerb verb) {

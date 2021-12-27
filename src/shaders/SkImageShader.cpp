@@ -190,9 +190,9 @@ SkShaderBase::Context* SkImageShader::onMakeContext(const ContextRec& rec,
 
     auto supported = [](const SkSamplingOptions& sampling) {
         const std::tuple<SkFilterMode,SkMipmapMode> supported[] = {
-            {SkFilterMode::kNearest, SkMipmapMode::kNone},    // legacy None
-            {SkFilterMode::kLinear,  SkMipmapMode::kNone},    // legacy Low
-            {SkFilterMode::kLinear,  SkMipmapMode::kNearest}, // legacy Medium
+            std::make_tuple(SkFilterMode::kNearest, SkMipmapMode::kNone),    // legacy None
+            std::make_tuple(SkFilterMode::kLinear,  SkMipmapMode::kNone),    // legacy Low
+            std::make_tuple(SkFilterMode::kLinear,  SkMipmapMode::kNearest), // legacy Medium
         };
         for (auto [f, m] : supported) {
             if (sampling.filter == f && sampling.mipmap == m) {

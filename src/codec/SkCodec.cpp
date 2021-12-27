@@ -442,7 +442,7 @@ std::tuple<sk_sp<SkImage>, SkCodec::Result> SkCodec::getImage(const SkImageInfo&
                                                               const Options* options) {
     SkBitmap bm;
     if (!bm.tryAllocPixels(info)) {
-        return {nullptr, kInternalError};
+        return std::tuple<sk_sp<SkImage>, SkCodec::Result>(nullptr, kInternalError);
     }
 
     Result result = this->getPixels(info, bm.getPixels(), bm.rowBytes(), options);
@@ -451,11 +451,11 @@ std::tuple<sk_sp<SkImage>, SkCodec::Result> SkCodec::getImage(const SkImageInfo&
         case kIncompleteInput:
         case kErrorInInput:
             bm.setImmutable();
-            return {bm.asImage(), result};
+            return std::tuple<sk_sp<SkImage>, SkCodec::Result>(bm.asImage(), result);
 
         default: break;
     }
-    return {nullptr, result};
+    return std::tuple<sk_sp<SkImage>, SkCodec::Result>(nullptr, result);
 }
 
 std::tuple<sk_sp<SkImage>, SkCodec::Result> SkCodec::getImage() {

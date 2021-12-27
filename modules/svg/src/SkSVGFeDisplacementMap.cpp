@@ -58,10 +58,10 @@ template <>
 bool SkSVGAttributeParser::parse<SkSVGFeDisplacementMap::ChannelSelector>(
         SkSVGFeDisplacementMap::ChannelSelector* channel) {
     static constexpr std::tuple<const char*, SkSVGFeDisplacementMap::ChannelSelector> gMap[] = {
-            { "R", SkSVGFeDisplacementMap::ChannelSelector::kR },
-            { "G", SkSVGFeDisplacementMap::ChannelSelector::kG },
-            { "B", SkSVGFeDisplacementMap::ChannelSelector::kB },
-            { "A", SkSVGFeDisplacementMap::ChannelSelector::kA },
+            std::make_tuple("R", SkSVGFeDisplacementMap::ChannelSelector::kR),
+            std::make_tuple("G", SkSVGFeDisplacementMap::ChannelSelector::kG),
+            std::make_tuple("B", SkSVGFeDisplacementMap::ChannelSelector::kB),
+            std::make_tuple("A", SkSVGFeDisplacementMap::ChannelSelector::kA),
     };
 
     return this->parseEnumMap(gMap, channel) && this->parseEOSToken();

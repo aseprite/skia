@@ -158,7 +158,7 @@ std::tuple<bool, SkVector> check_integer_translate(
         initialMatrix.getScaleY() != drawMatrix.getScaleY() ||
         initialMatrix.getSkewX()  != drawMatrix.getSkewX()  ||
         initialMatrix.getSkewY()  != drawMatrix.getSkewY()) {
-        return {false, {0, 0}};
+        return std::make_tuple(false, SkVector{0, 0});
     }
 
     // We can update the positions in the text blob without regenerating the whole
@@ -167,7 +167,7 @@ std::tuple<bool, SkVector> check_integer_translate(
     // (0, 0) through both the initial matrix and the draw matrix; take the difference.
     SkVector translation = drawMatrix.mapXY(0, 0) - initialMatrix.mapXY(0, 0);
 
-    return {SkScalarIsInt(translation.x()) && SkScalarIsInt(translation.y()), translation};
+    return std::tuple<bool, SkVector>(SkScalarIsInt(translation.x()) && SkScalarIsInt(translation.y()), translation);
 }
 
 // -- PathSubRun -----------------------------------------------------------------------------------
@@ -434,7 +434,7 @@ std::tuple<bool, int> GlyphVector::regenerateAtlas(int begin, int end,
             fAtlasGeneration = atlasManager->atlasGeneration(maskFormat);
         }
 
-        return {success, glyphsPlacedInAtlas};
+        return std::tuple<bool, int>(success, glyphsPlacedInAtlas);
     } else {
         // The atlas hasn't changed, so our texture coordinates are still valid.
         if (end == SkCount(fGlyphs)) {
@@ -444,7 +444,7 @@ std::tuple<bool, int> GlyphVector::regenerateAtlas(int begin, int end,
                                           uploadTarget->tokenTracker()->nextDrawToken(),
                                           maskFormat);
         }
-        return {true, end - begin};
+        return std::tuple<bool, int>(true, end - begin);
     }
 }
 
@@ -621,13 +621,13 @@ enum ClipMethod {
 std::tuple<ClipMethod, SkIRect>
 calculate_clip(const GrClip* clip, SkRect deviceBounds, SkRect glyphBounds) {
     if (clip == nullptr && !deviceBounds.intersects(glyphBounds)) {
-        return {kClippedOut, SkIRect::MakeEmpty()};
+        return std::tuple<ClipMethod, SkIRect>(kClippedOut, SkIRect::MakeEmpty());
     } else if (clip != nullptr) {
         switch (auto result = clip->preApply(glyphBounds, GrAA::kNo); result.fEffect) {
             case GrClip::Effect::kClippedOut:
-                return {kClippedOut, SkIRect::MakeEmpty()};
+                return std::tuple<ClipMethod, SkIRect>(kClippedOut, SkIRect::MakeEmpty());
             case GrClip::Effect::kUnclipped:
-                return {kUnclipped, SkIRect::MakeEmpty()};
+                return std::tuple<ClipMethod, SkIRect>(kUnclipped, SkIRect::MakeEmpty());
             case GrClip::Effect::kClipped: {
                 if (result.fIsRRect && result.fRRect.isRect()) {
                     SkRect r = result.fRRect.rect();
@@ -637,10 +637,10 @@ calculate_clip(const GrClip* clip, SkRect deviceBounds, SkRect glyphBounds) {
                         r.round(&clipRect);
                         if (clipRect.contains(glyphBounds)) {
                             // If fully within the clip, signal no clipping using the empty rect.
-                            return {kUnclipped, SkIRect::MakeEmpty()};
+                            return std::tuple<ClipMethod, SkIRect>(kUnclipped, SkIRect::MakeEmpty());
                         }
                         // Use the clipRect to clip the geometry.
-                        return {kGeometryClipped, clipRect};
+                        return std::tuple<ClipMethod, SkIRect>(kGeometryClipped, clipRect);
                     }
                     // Partial pixel clipped at this point. Have the GPU handle it.
                 }
@@ -648,7 +648,7 @@ calculate_clip(const GrClip* clip, SkRect deviceBounds, SkRect glyphBounds) {
             break;
         }
     }
-    return {kGPUClipped, SkIRect::MakeEmpty()};
+    return std::tuple<ClipMethod, SkIRect>(kGPUClipped, SkIRect::MakeEmpty());
 }
 }  // namespace
 
@@ -673,7 +673,7 @@ DirectMaskSubRun::makeAtlasTextOp(const GrClip* clip, const SkMatrixProvider& vi
     switch (clipMethod) {
         case kClippedOut:
             // Returning nullptr as op means skip this op.
-            return {nullptr, nullptr};
+            return std::tuple<const GrClip*, GrOp::Owner>(nullptr, nullptr);
         case kUnclipped:
         case kGeometryClipped:
             // GPU clip is not needed.
@@ -707,7 +707,7 @@ DirectMaskSubRun::makeAtlasTextOp(const GrClip* clip, const SkMatrixProvider& vi
                                              geometry,
                                              std::move(grPaint));
 
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 #endif // SK_GPU_V1
 
@@ -993,7 +993,7 @@ TransformedMaskSubRun::makeAtlasTextOp(const GrClip* clip,
                                              this->deviceRect(drawMatrix, drawOrigin),
                                              geometry,
                                              std::move(grPaint));
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 #endif // SK_GPU_V1
 
@@ -1265,7 +1265,7 @@ static std::tuple<AtlasTextOp::MaskType, uint32_t, bool> calculate_sdf_parameter
         DFGPFlags |= kUseLCD_DistanceFieldEffectFlag;
         DFGPFlags |= MT::kLCDBGRDistanceField == maskType ? kBGR_DistanceFieldEffectFlag : 0;
     }
-    return {maskType, DFGPFlags, useGammaCorrectDistanceTable};
+    return std::tuple<AtlasTextOp::MaskType, uint32_t, bool>(maskType, DFGPFlags, useGammaCorrectDistanceTable);
 }
 
 std::tuple<const GrClip*, GrOp::Owner >
@@ -1307,7 +1307,7 @@ SDFTSubRun::makeAtlasTextOp(const GrClip* clip,
                                              geometry,
                                              std::move(grPaint));
 
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 
 #endif // SK_GPU_V1
@@ -1466,7 +1466,7 @@ auto GrTextBlob::Key::Make(const SkGlyphRunList& glyphRunList,
         }
     }
 
-    return {canCache, key};
+    return std::tuple<bool, Key>(canCache, key);
 }
 
 bool GrTextBlob::Key::operator==(const GrTextBlob::Key& that) const {
@@ -1809,7 +1809,7 @@ DirectMaskSubRunNoCache::makeAtlasTextOp(const GrClip* clip,
     switch (clipMethod) {
         case kClippedOut:
             // Returning nullptr as op means skip this op.
-            return {nullptr, nullptr};
+          return std::tuple<const GrClip*, GrOp::Owner>(nullptr, nullptr);
         case kUnclipped:
         case kGeometryClipped:
             // GPU clip is not needed.
@@ -1846,7 +1846,7 @@ DirectMaskSubRunNoCache::makeAtlasTextOp(const GrClip* clip,
                                              geometry,
                                              std::move(grPaint));
 
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 #endif // SK_GPU_V1
 
@@ -2043,7 +2043,7 @@ TransformedMaskSubRunNoCache::makeAtlasTextOp(const GrClip* clip,
                                              this->deviceRect(drawMatrix, drawOrigin),
                                              geometry,
                                              std::move(grPaint));
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 #endif // SK_GPU_V1
 
@@ -2292,7 +2292,7 @@ SDFTSubRunNoCache::makeAtlasTextOp(const GrClip* clip,
                                              geometry,
                                              std::move(grPaint));
 
-    return {clip, std::move(op)};
+    return std::tuple<const GrClip*, GrOp::Owner>(clip, std::move(op));
 }
 #endif // SK_GPU_V1
 
@@ -2474,4 +2474,3 @@ void GrSubRunNoCachePainter::draw(GrAtlasSubRunOwner subRun) {
     }
 }
 #endif // SK_GPU_V1
-

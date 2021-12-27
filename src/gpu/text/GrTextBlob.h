@@ -232,7 +232,7 @@ public:
     const SkMatrix& initialMatrix() const { return fInitialMatrix; }
 
     std::tuple<SkScalar, SkScalar> scaleBounds() const {
-        return {fMaxMinScale, fMinMaxScale};
+        return std::make_tuple(fMaxMinScale, fMinMaxScale);
     }
 
     bool canReuse(const SkPaint& paint, const SkMatrix& drawMatrix) const;

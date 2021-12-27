@@ -116,10 +116,10 @@ template <> bool SkSVGAttributeParser::parse(SkSVGFeColorMatrixValues* values) {
 
 template <> bool SkSVGAttributeParser::parse(SkSVGFeColorMatrixType* type) {
     static constexpr std::tuple<const char*, SkSVGFeColorMatrixType> gTypeMap[] = {
-            {"matrix", SkSVGFeColorMatrixType::kMatrix},
-            {"saturate", SkSVGFeColorMatrixType::kSaturate},
-            {"hueRotate", SkSVGFeColorMatrixType::kHueRotate},
-            {"luminanceToAlpha", SkSVGFeColorMatrixType::kLuminanceToAlpha},
+            std::make_tuple("matrix", SkSVGFeColorMatrixType::kMatrix),
+            std::make_tuple("saturate", SkSVGFeColorMatrixType::kSaturate),
+            std::make_tuple("hueRotate", SkSVGFeColorMatrixType::kHueRotate),
+            std::make_tuple("luminanceToAlpha", SkSVGFeColorMatrixType::kLuminanceToAlpha),
     };
 
     return this->parseEnumMap(gTypeMap, type) && this->parseEOSToken();

@@ -54,24 +54,24 @@ std::tuple<int, SkYUVAPixmapInfo::DataType> SkYUVAPixmapInfo::NumChannelsAndData
     // or 2nd channel. Our docs currently say channel order is always R=0, G=1, B=2[, A=3].
     switch (ct) {
         case kAlpha_8_SkColorType:
-        case kGray_8_SkColorType:    return {1, DataType::kUnorm8 };
-        case kA16_unorm_SkColorType: return {1, DataType::kUnorm16};
-        case kA16_float_SkColorType: return {1, DataType::kFloat16};
+        case kGray_8_SkColorType:    return std::tuple<int, SkYUVAPixmapInfo::DataType>(1, DataType::kUnorm8);
+        case kA16_unorm_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(1, DataType::kUnorm16);
+        case kA16_float_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(1, DataType::kFloat16);
 
-        case kR8G8_unorm_SkColorType:   return {2, DataType::kUnorm8  };
-        case kR16G16_unorm_SkColorType: return {2, DataType::kUnorm16 };
-        case kR16G16_float_SkColorType: return {2, DataType::kFloat16 };
+        case kR8G8_unorm_SkColorType:   return std::tuple<int, SkYUVAPixmapInfo::DataType>(2, DataType::kUnorm8);
+        case kR16G16_unorm_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(2, DataType::kUnorm16);
+        case kR16G16_float_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(2, DataType::kFloat16);
 
-        case kRGB_888x_SkColorType:    return {3, DataType::kUnorm8          };
-        case kRGB_101010x_SkColorType: return {3, DataType::kUnorm10_Unorm2  };
+        case kRGB_888x_SkColorType:    return std::tuple<int, SkYUVAPixmapInfo::DataType>(3, DataType::kUnorm8);
+        case kRGB_101010x_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(3, DataType::kUnorm10_Unorm2);
 
-        case kRGBA_8888_SkColorType:          return {4, DataType::kUnorm8  };
-        case kR16G16B16A16_unorm_SkColorType: return {4, DataType::kUnorm16 };
-        case kRGBA_F16_SkColorType:           return {4, DataType::kFloat16 };
-        case kRGBA_F16Norm_SkColorType:       return {4, DataType::kFloat16 };
-        case kRGBA_1010102_SkColorType:       return {4, DataType::kUnorm10_Unorm2 };
+        case kRGBA_8888_SkColorType:          return std::tuple<int, SkYUVAPixmapInfo::DataType>(4, DataType::kUnorm8);
+        case kR16G16B16A16_unorm_SkColorType: return std::tuple<int, SkYUVAPixmapInfo::DataType>(4, DataType::kUnorm16);
+        case kRGBA_F16_SkColorType:           return std::tuple<int, SkYUVAPixmapInfo::DataType>(4, DataType::kFloat16);
+        case kRGBA_F16Norm_SkColorType:       return std::tuple<int, SkYUVAPixmapInfo::DataType>(4, DataType::kFloat16);
+        case kRGBA_1010102_SkColorType:       return std::tuple<int, SkYUVAPixmapInfo::DataType>(4, DataType::kUnorm10_Unorm2);
 
-        default: return {0, DataType::kUnorm8 };
+        default: return std::tuple<int, SkYUVAPixmapInfo::DataType>(0, DataType::kUnorm8);
     }
 }
 

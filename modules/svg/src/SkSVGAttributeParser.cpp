@@ -813,10 +813,10 @@ bool SkSVGAttributeParser::parse(SkSVGFontSize* size) {
 template <>
 bool SkSVGAttributeParser::parse(SkSVGFontStyle* style) {
     static constexpr std::tuple<const char*, SkSVGFontStyle::Type> gStyleMap[] = {
-        { "normal" , SkSVGFontStyle::Type::kNormal  },
-        { "italic" , SkSVGFontStyle::Type::kItalic  },
-        { "oblique", SkSVGFontStyle::Type::kOblique },
-        { "inherit", SkSVGFontStyle::Type::kInherit },
+        std::make_tuple("normal" , SkSVGFontStyle::Type::kNormal),
+        std::make_tuple("italic" , SkSVGFontStyle::Type::kItalic),
+        std::make_tuple("oblique", SkSVGFontStyle::Type::kOblique),
+        std::make_tuple("inherit", SkSVGFontStyle::Type::kInherit),
     };
 
     bool parsedValue = false;
@@ -834,20 +834,20 @@ bool SkSVGAttributeParser::parse(SkSVGFontStyle* style) {
 template <>
 bool SkSVGAttributeParser::parse(SkSVGFontWeight* weight) {
     static constexpr std::tuple<const char*, SkSVGFontWeight::Type> gWeightMap[] = {
-        { "normal" , SkSVGFontWeight::Type::kNormal  },
-        { "bold"   , SkSVGFontWeight::Type::kBold    },
-        { "bolder" , SkSVGFontWeight::Type::kBolder  },
-        { "lighter", SkSVGFontWeight::Type::kLighter },
-        { "100"    , SkSVGFontWeight::Type::k100     },
-        { "200"    , SkSVGFontWeight::Type::k200     },
-        { "300"    , SkSVGFontWeight::Type::k300     },
-        { "400"    , SkSVGFontWeight::Type::k400     },
-        { "500"    , SkSVGFontWeight::Type::k500     },
-        { "600"    , SkSVGFontWeight::Type::k600     },
-        { "700"    , SkSVGFontWeight::Type::k700     },
-        { "800"    , SkSVGFontWeight::Type::k800     },
-        { "900"    , SkSVGFontWeight::Type::k900     },
-        { "inherit", SkSVGFontWeight::Type::kInherit },
+        std::make_tuple("normal" , SkSVGFontWeight::Type::kNormal),
+        std::make_tuple("bold"   , SkSVGFontWeight::Type::kBold),
+        std::make_tuple("bolder" , SkSVGFontWeight::Type::kBolder),
+        std::make_tuple("lighter", SkSVGFontWeight::Type::kLighter),
+        std::make_tuple("100"    , SkSVGFontWeight::Type::k100),
+        std::make_tuple("200"    , SkSVGFontWeight::Type::k200),
+        std::make_tuple("300"    , SkSVGFontWeight::Type::k300),
+        std::make_tuple("400"    , SkSVGFontWeight::Type::k400),
+        std::make_tuple("500"    , SkSVGFontWeight::Type::k500),
+        std::make_tuple("600"    , SkSVGFontWeight::Type::k600),
+        std::make_tuple("700"    , SkSVGFontWeight::Type::k700),
+        std::make_tuple("800"    , SkSVGFontWeight::Type::k800),
+        std::make_tuple("900"    , SkSVGFontWeight::Type::k900),
+        std::make_tuple("inherit", SkSVGFontWeight::Type::kInherit),
     };
 
     bool parsedValue = false;
@@ -865,10 +865,10 @@ bool SkSVGAttributeParser::parse(SkSVGFontWeight* weight) {
 template <>
 bool SkSVGAttributeParser::parse(SkSVGTextAnchor* anchor) {
     static constexpr std::tuple<const char*, SkSVGTextAnchor::Type> gAnchorMap[] = {
-        { "start"  , SkSVGTextAnchor::Type::kStart  },
-        { "middle" , SkSVGTextAnchor::Type::kMiddle },
-        { "end"    , SkSVGTextAnchor::Type::kEnd    },
-        { "inherit", SkSVGTextAnchor::Type::kInherit},
+        std::make_tuple("start"  , SkSVGTextAnchor::Type::kStart),
+        std::make_tuple("middle" , SkSVGTextAnchor::Type::kMiddle),
+        std::make_tuple("end"    , SkSVGTextAnchor::Type::kEnd),
+        std::make_tuple("inherit", SkSVGTextAnchor::Type::kInherit),
     };
 
     bool parsedValue = false;
@@ -885,21 +885,21 @@ bool SkSVGAttributeParser::parse(SkSVGTextAnchor* anchor) {
 // https://www.w3.org/TR/SVG11/coords.html#PreserveAspectRatioAttribute
 bool SkSVGAttributeParser::parsePreserveAspectRatio(SkSVGPreserveAspectRatio* par) {
     static constexpr std::tuple<const char*, SkSVGPreserveAspectRatio::Align> gAlignMap[] = {
-        { "none"    , SkSVGPreserveAspectRatio::kNone     },
-        { "xMinYMin", SkSVGPreserveAspectRatio::kXMinYMin },
-        { "xMidYMin", SkSVGPreserveAspectRatio::kXMidYMin },
-        { "xMaxYMin", SkSVGPreserveAspectRatio::kXMaxYMin },
-        { "xMinYMid", SkSVGPreserveAspectRatio::kXMinYMid },
-        { "xMidYMid", SkSVGPreserveAspectRatio::kXMidYMid },
-        { "xMaxYMid", SkSVGPreserveAspectRatio::kXMaxYMid },
-        { "xMinYMax", SkSVGPreserveAspectRatio::kXMinYMax },
-        { "xMidYMax", SkSVGPreserveAspectRatio::kXMidYMax },
-        { "xMaxYMax", SkSVGPreserveAspectRatio::kXMaxYMax },
+        std::make_tuple("none"    , SkSVGPreserveAspectRatio::kNone),
+        std::make_tuple("xMinYMin", SkSVGPreserveAspectRatio::kXMinYMin),
+        std::make_tuple("xMidYMin", SkSVGPreserveAspectRatio::kXMidYMin),
+        std::make_tuple("xMaxYMin", SkSVGPreserveAspectRatio::kXMaxYMin),
+        std::make_tuple("xMinYMid", SkSVGPreserveAspectRatio::kXMinYMid),
+        std::make_tuple("xMidYMid", SkSVGPreserveAspectRatio::kXMidYMid),
+        std::make_tuple("xMaxYMid", SkSVGPreserveAspectRatio::kXMaxYMid),
+        std::make_tuple("xMinYMax", SkSVGPreserveAspectRatio::kXMinYMax),
+        std::make_tuple("xMidYMax", SkSVGPreserveAspectRatio::kXMidYMax),
+        std::make_tuple("xMaxYMax", SkSVGPreserveAspectRatio::kXMaxYMax),
     };
 
     static constexpr std::tuple<const char*, SkSVGPreserveAspectRatio::Scale> gScaleMap[] = {
-        { "meet" , SkSVGPreserveAspectRatio::kMeet  },
-        { "slice", SkSVGPreserveAspectRatio::kSlice },
+        std::make_tuple("meet" , SkSVGPreserveAspectRatio::kMeet),
+        std::make_tuple("slice", SkSVGPreserveAspectRatio::kSlice),
     };
 
     bool parsedValue = false;
@@ -956,9 +956,9 @@ bool SkSVGAttributeParser::parse(std::vector<SkSVGNumberType>* numbers) {
 template <>
 bool SkSVGAttributeParser::parse(SkSVGColorspace* colorspace) {
     static constexpr std::tuple<const char*, SkSVGColorspace> gColorspaceMap[] = {
-        { "auto"     , SkSVGColorspace::kAuto      },
-        { "sRGB"     , SkSVGColorspace::kSRGB      },
-        { "linearRGB", SkSVGColorspace::kLinearRGB },
+        std::make_tuple("auto"     , SkSVGColorspace::kAuto),
+        std::make_tuple("sRGB"     , SkSVGColorspace::kSRGB),
+        std::make_tuple("linearRGB", SkSVGColorspace::kLinearRGB),
     };
 
     return this->parseEnumMap(gColorspaceMap, colorspace) && this->parseEOSToken();

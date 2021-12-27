@@ -49,11 +49,11 @@ template <>
 bool SkSVGAttributeParser::parse<SkSVGFeBlend::Mode>(
         SkSVGFeBlend::Mode* mode) {
     static constexpr std::tuple<const char*, SkSVGFeBlend::Mode> gMap[] = {
-        { "normal"  , SkSVGFeBlend::Mode::kNormal   },
-        { "multiply", SkSVGFeBlend::Mode::kMultiply },
-        { "screen"  , SkSVGFeBlend::Mode::kScreen   },
-        { "darken"  , SkSVGFeBlend::Mode::kDarken   },
-        { "lighten" , SkSVGFeBlend::Mode::kLighten  },
+        std::make_tuple("normal"  , SkSVGFeBlend::Mode::kNormal),
+        std::make_tuple("multiply", SkSVGFeBlend::Mode::kMultiply),
+        std::make_tuple("screen"  , SkSVGFeBlend::Mode::kScreen),
+        std::make_tuple("darken"  , SkSVGFeBlend::Mode::kDarken),
+        std::make_tuple("lighten" , SkSVGFeBlend::Mode::kLighten),
     };
 
     return this->parseEnumMap(gMap, mode) && this->parseEOSToken();

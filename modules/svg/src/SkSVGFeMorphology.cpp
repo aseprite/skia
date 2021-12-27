@@ -41,8 +41,8 @@ sk_sp<SkImageFilter> SkSVGFeMorphology::onMakeImageFilter(const SkSVGRenderConte
 template <>
 bool SkSVGAttributeParser::parse<SkSVGFeMorphology::Operator>(SkSVGFeMorphology::Operator* op) {
     static constexpr std::tuple<const char*, SkSVGFeMorphology::Operator> gMap[] = {
-            { "dilate", SkSVGFeMorphology::Operator::kDilate },
-            { "erode" , SkSVGFeMorphology::Operator::kErode  },
+            std::make_tuple("dilate", SkSVGFeMorphology::Operator::kDilate),
+            std::make_tuple("erode" , SkSVGFeMorphology::Operator::kErode),
     };
 
     return this->parseEnumMap(gMap, op) && this->parseEOSToken();

@@ -62,12 +62,12 @@ sk_sp<SkImageFilter> SkSVGFeComposite::onMakeImageFilter(const SkSVGRenderContex
 
 template <> bool SkSVGAttributeParser::parse(SkSVGFeCompositeOperator* op) {
     static constexpr std::tuple<const char*, SkSVGFeCompositeOperator> gOpMap[] = {
-            {"over", SkSVGFeCompositeOperator::kOver},
-            {"in", SkSVGFeCompositeOperator::kIn},
-            {"out", SkSVGFeCompositeOperator::kOut},
-            {"atop", SkSVGFeCompositeOperator::kAtop},
-            {"xor", SkSVGFeCompositeOperator::kXor},
-            {"arithmetic", SkSVGFeCompositeOperator::kArithmetic},
+            std::make_tuple("over", SkSVGFeCompositeOperator::kOver),
+            std::make_tuple("in", SkSVGFeCompositeOperator::kIn),
+            std::make_tuple("out", SkSVGFeCompositeOperator::kOut),
+            std::make_tuple("atop", SkSVGFeCompositeOperator::kAtop),
+            std::make_tuple("xor", SkSVGFeCompositeOperator::kXor),
+            std::make_tuple("arithmetic", SkSVGFeCompositeOperator::kArithmetic),
     };
 
     return this->parseEnumMap(gOpMap, op) && this->parseEOSToken();

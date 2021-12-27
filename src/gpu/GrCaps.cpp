@@ -484,9 +484,9 @@ std::tuple<GrColorType, GrBackendFormat> GrCaps::getFallbackColorTypeAndFormat(
         // We continue to the fallback color type if there no default renderable format or we
         // requested msaa and the format doesn't support msaa.
         if (format.isValid() && this->isFormatRenderable(format, sampleCnt)) {
-            return {ct, format};
+            return std::tuple<GrColorType, GrBackendFormat>(ct, format);
         }
         ct = color_type_fallback(ct);
     } while (ct != GrColorType::kUnknown);
-    return {GrColorType::kUnknown, {}};
+    return std::tuple<GrColorType, GrBackendFormat>(GrColorType::kUnknown, {});
 }

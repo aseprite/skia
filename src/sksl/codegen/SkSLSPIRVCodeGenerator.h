@@ -474,7 +474,7 @@ private:
     SpvId fIdCount;
     SpvId fGLSLExtendedInstructions;
     typedef std::tuple<IntrinsicOpcodeKind, int32_t, int32_t, int32_t, int32_t> Intrinsic;
-    std::unordered_map<IntrinsicKind, Intrinsic> fIntrinsicMap;
+    std::unordered_map<IntrinsicKind, Intrinsic, std::hash<int32_t>> fIntrinsicMap;
     std::unordered_map<const FunctionDeclaration*, SpvId> fFunctionMap;
     std::unordered_map<const Variable*, SpvId> fVariableMap;
     std::unordered_map<const Variable*, int32_t> fInterfaceBlockMap;

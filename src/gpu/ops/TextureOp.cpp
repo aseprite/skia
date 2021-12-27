@@ -66,7 +66,7 @@ filter_and_mm_have_effect(const GrQuad& srcQuad, const GrQuad& dstQuad) {
     // If not axis-aligned in src or dst, then always say it has an effect
     if (srcQuad.quadType() != GrQuad::Type::kAxisAligned ||
         dstQuad.quadType() != GrQuad::Type::kAxisAligned) {
-        return {true, true};
+        return std::make_tuple(true, true);
     }
 
     SkRect srcRect;
@@ -80,7 +80,7 @@ filter_and_mm_have_effect(const GrQuad& srcQuad, const GrQuad& dstQuad) {
                       SkScalarFraction(srcRect.fLeft) != SkScalarFraction(dstRect.fLeft) ||
                       SkScalarFraction(srcRect.fTop)  != SkScalarFraction(dstRect.fTop);
         bool mm = srcRect.width() > dstRect.width() || srcRect.height() > dstRect.height();
-        return {filter, mm};
+        return std::make_tuple(filter, mm);
     }
     // Extract edge lengths
     SkSize srcSize = axis_aligned_quad_size(srcQuad);
@@ -95,7 +95,7 @@ filter_and_mm_have_effect(const GrQuad& srcQuad, const GrQuad& dstQuad) {
                   !SkScalarIsInt(dstQuad.x(0)) ||
                   !SkScalarIsInt(dstQuad.y(0));
     bool mm = srcSize.fWidth > dstSize.fWidth || srcSize.fHeight > dstSize.fHeight;
-    return {filter, mm};
+    return std::make_tuple(filter, mm);
 }
 
 // Describes function for normalizing src coords: [x * iw, y * ih + yOffset] can represent

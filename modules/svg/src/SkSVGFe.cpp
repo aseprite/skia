@@ -102,12 +102,12 @@ bool SkSVGFe::parseAndSetAttribute(const char* name, const char* value) {
 
 template <> bool SkSVGAttributeParser::parse(SkSVGFeInputType* type) {
     static constexpr std::tuple<const char*, SkSVGFeInputType::Type> gTypeMap[] = {
-            {"SourceGraphic", SkSVGFeInputType::Type::kSourceGraphic},
-            {"SourceAlpha", SkSVGFeInputType::Type::kSourceAlpha},
-            {"BackgroundImage", SkSVGFeInputType::Type::kBackgroundImage},
-            {"BackgroundAlpha", SkSVGFeInputType::Type::kBackgroundAlpha},
-            {"FillPaint", SkSVGFeInputType::Type::kFillPaint},
-            {"StrokePaint", SkSVGFeInputType::Type::kStrokePaint},
+            std::make_tuple("SourceGraphic", SkSVGFeInputType::Type::kSourceGraphic),
+            std::make_tuple("SourceAlpha", SkSVGFeInputType::Type::kSourceAlpha),
+            std::make_tuple("BackgroundImage", SkSVGFeInputType::Type::kBackgroundImage),
+            std::make_tuple("BackgroundAlpha", SkSVGFeInputType::Type::kBackgroundAlpha),
+            std::make_tuple("FillPaint", SkSVGFeInputType::Type::kFillPaint),
+            std::make_tuple("StrokePaint", SkSVGFeInputType::Type::kStrokePaint),
     };
 
     SkSVGStringType resultId;

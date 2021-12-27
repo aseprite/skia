@@ -517,8 +517,8 @@ void SkSVGTextContainer::onShapeText(const SkSVGRenderContext& ctx, SkSVGTextCon
 template <>
 bool SkSVGAttributeParser::parse(SkSVGXmlSpace* xs) {
     static constexpr std::tuple<const char*, SkSVGXmlSpace> gXmlSpaceMap[] = {
-            {"default" , SkSVGXmlSpace::kDefault },
-            {"preserve", SkSVGXmlSpace::kPreserve},
+            std::make_tuple("default" , SkSVGXmlSpace::kDefault),
+            std::make_tuple("preserve", SkSVGXmlSpace::kPreserve),
     };
 
     return this->parseEnumMap(gXmlSpaceMap, xs) && this->parseEOSToken();

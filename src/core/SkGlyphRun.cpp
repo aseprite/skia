@@ -278,7 +278,7 @@ SkGlyphRunBuilder::convertRSXForm(SkSpan<const SkRSXform> xforms) {
         pos = {tx, ty};
         sr = {scos, ssin};
     }
-    return {positions, scaledRotations};
+    return std::tuple<SkSpan<const SkPoint>, SkSpan<const SkVector>>(positions, scaledRotations);
 }
 
 void SkGlyphRunBuilder::initialize(const SkTextBlob& blob) {

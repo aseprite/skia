@@ -37,7 +37,7 @@ public:
             void operator++() { fHead = fHead->fNext; }
             bool operator!=(const Iter& b) const { return fHead != b.fHead; }
             std::tuple<const SkMatrix&, const SkPath&> operator*() const {
-                return {fHead->fPathMatrix, fHead->fPath};
+                return std::tuple<const SkMatrix&, const SkPath&>(fHead->fPathMatrix, fHead->fPath);
             }
             const PathDrawList* fHead;
         };

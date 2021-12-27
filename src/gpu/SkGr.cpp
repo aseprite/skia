@@ -207,7 +207,7 @@ GrMakeCachedBitmapProxyView(GrRecordingContext* rContext,
 
     GrSwizzle swizzle = caps->getReadSwizzle(proxy->backendFormat(), ct);
     if (mipmapped == GrMipmapped::kNo || proxy->mipmapped() == GrMipmapped::kYes) {
-        return {{std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct};
+        return std::tuple<GrSurfaceProxyView, GrColorType>({std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct);
     }
 
     // We need a mipped proxy, but we found a proxy earlier that wasn't mipped. Thus we generate
@@ -218,7 +218,7 @@ GrMakeCachedBitmapProxyView(GrRecordingContext* rContext,
         // We failed to make a mipped proxy with the base copied into it. This could have
         // been from failure to make the proxy or failure to do the copy. Thus we will fall
         // back to just using the non mipped proxy; See skbug.com/7094.
-        return {{std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct};
+        return std::tuple<GrSurfaceProxyView, GrColorType>({std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct);
     }
     // In this case we are stealing the key from the original proxy which should only happen
     // when we have just generated mipmaps for an originally unmipped proxy/texture. This
@@ -228,7 +228,7 @@ GrMakeCachedBitmapProxyView(GrRecordingContext* rContext,
     SkASSERT(proxy->getUniqueKey() == key);
     proxyProvider->removeUniqueKeyFromProxy(proxy.get());
     installKey(mippedProxy->asTextureProxy());
-    return {{std::move(mippedProxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct};
+    return std::tuple<GrSurfaceProxyView, GrColorType>({std::move(mippedProxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct);
 }
 
 std::tuple<GrSurfaceProxyView, GrColorType>
@@ -246,7 +246,7 @@ GrMakeUncachedBitmapProxyView(GrRecordingContext* rContext,
     if (auto proxy = make_bmp_proxy(proxyProvider, bitmap, ct, mipmapped, fit, budgeted)) {
         GrSwizzle swizzle = caps->getReadSwizzle(proxy->backendFormat(), ct);
         SkASSERT(mipmapped == GrMipmapped::kNo || proxy->mipmapped() == GrMipmapped::kYes);
-        return {{std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct};
+        return std::tuple<GrSurfaceProxyView, GrColorType>({std::move(proxy), kTopLeft_GrSurfaceOrigin, swizzle}, ct);
     }
     return {};
 }

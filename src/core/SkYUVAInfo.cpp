@@ -26,13 +26,13 @@ static bool is_plane_config_compatible_with_subsampling(SkYUVAInfo::PlaneConfig 
 
 std::tuple<int, int> SkYUVAInfo::SubsamplingFactors(Subsampling subsampling) {
     switch (subsampling) {
-        case Subsampling::kUnknown: return {0, 0};
-        case Subsampling::k444:     return {1, 1};
-        case Subsampling::k422:     return {2, 1};
-        case Subsampling::k420:     return {2, 2};
-        case Subsampling::k440:     return {1, 2};
-        case Subsampling::k411:     return {4, 1};
-        case Subsampling::k410:     return {4, 2};
+        case Subsampling::kUnknown: return std::tuple<int, int>(0, 0);
+        case Subsampling::k444:     return std::tuple<int, int>(1, 1);
+        case Subsampling::k422:     return std::tuple<int, int>(2, 1);
+        case Subsampling::k420:     return std::tuple<int, int>(2, 2);
+        case Subsampling::k440:     return std::tuple<int, int>(1, 2);
+        case Subsampling::k411:     return std::tuple<int, int>(4, 1);
+        case Subsampling::k410:     return std::tuple<int, int>(4, 2);
     }
     SkUNREACHABLE;
 }
@@ -43,7 +43,7 @@ std::tuple<int, int> SkYUVAInfo::PlaneSubsamplingFactors(PlaneConfig planeConfig
     if (!is_plane_config_compatible_with_subsampling(planeConfig, subsampling) ||
         planeIdx < 0                                                           ||
         planeIdx > NumPlanes(planeConfig)) {
-        return {0, 0};
+        return std::make_tuple(0, 0);
     }
     bool isSubsampledPlane = false;
     switch (planeConfig) {

@@ -46,10 +46,10 @@ DSLExpression::DSLExpression(float value, PositionInfo pos)
     : fExpression(SkSL::Literal::MakeFloat(ThreadContext::Context(),
                                            pos.line(),
                                            value)) {
-    if (!isfinite(value)) {
-        if (isinf(value)) {
+    if (!std::isfinite(value)) {
+        if (std::isinf(value)) {
             ThreadContext::ReportError("floating point value is infinite");
-        } else if (isnan(value)) {
+        } else if (std::isnan(value)) {
             ThreadContext::ReportError("floating point value is NaN");
         }
     }

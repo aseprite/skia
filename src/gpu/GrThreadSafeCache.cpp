@@ -112,7 +112,7 @@ std::tuple<GrSurfaceProxyView, sk_sp<SkData>> GrThreadSafeCache::internalFind(
     Entry* tmp = fUniquelyKeyedEntryMap.find(key);
     if (tmp) {
         this->makeExistingEntryMRU(tmp);
-        return { tmp->view(), tmp->refCustomData() };
+        return std::tuple<GrSurfaceProxyView, sk_sp<SkData>>(tmp->view(), tmp->refCustomData());
     }
 
     return {};
@@ -202,7 +202,7 @@ std::tuple<GrSurfaceProxyView, sk_sp<SkData>> GrThreadSafeCache::internalAdd(
         SkASSERT(fUniquelyKeyedEntryMap.find(key));
     }
 
-    return { tmp->view(), tmp->refCustomData() };
+    return std::tuple<GrSurfaceProxyView, sk_sp<SkData>>(tmp->view(), tmp->refCustomData());
 }
 
 GrSurfaceProxyView GrThreadSafeCache::add(const GrUniqueKey& key, const GrSurfaceProxyView& view) {
@@ -242,7 +242,7 @@ std::tuple<GrSurfaceProxyView, sk_sp<SkData>> GrThreadSafeCache::findOrAddWithDa
 
     auto [view, data] = this->internalFind(key);
     if (view) {
-        return { std::move(view), std::move(data) };
+        return std::tuple<GrSurfaceProxyView, sk_sp<SkData>>(std::move(view), std::move(data));
     }
 
     return this->internalAdd(key, v);
@@ -265,7 +265,7 @@ std::tuple<sk_sp<GrThreadSafeCache::VertexData>, sk_sp<SkData>> GrThreadSafeCach
     Entry* tmp = fUniquelyKeyedEntryMap.find(key);
     if (tmp) {
         this->makeExistingEntryMRU(tmp);
-        return { tmp->vertexData(), tmp->refCustomData() };
+        return std::tuple<sk_sp<GrThreadSafeCache::VertexData>, sk_sp<SkData>>(tmp->vertexData(), tmp->refCustomData());
     }
 
     return {};
@@ -293,7 +293,7 @@ std::tuple<sk_sp<GrThreadSafeCache::VertexData>, sk_sp<SkData>> GrThreadSafeCach
         tmp->set(key, std::move(vertData));
     }
 
-    return { tmp->vertexData(), tmp->refCustomData() };
+    return std::tuple<sk_sp<GrThreadSafeCache::VertexData>, sk_sp<SkData>>(tmp->vertexData(), tmp->refCustomData());
 }
 
 std::tuple<sk_sp<GrThreadSafeCache::VertexData>, sk_sp<SkData>> GrThreadSafeCache::addVertsWithData(
@@ -329,7 +329,7 @@ GrThreadSafeCache::CreateLazyView(GrDirectContext* dContext,
     auto [newCT, format] = caps->getFallbackColorTypeAndFormat(origCT, kSampleCnt);
 
     if (newCT == GrColorType::kUnknown) {
-        return {GrSurfaceProxyView(nullptr), nullptr};
+        return std::tuple<GrSurfaceProxyView, sk_sp<GrThreadSafeCache::Trampoline>>(GrSurfaceProxyView(nullptr), nullptr);
     }
 
     sk_sp<Trampoline> trampoline(new Trampoline);
@@ -365,5 +365,5 @@ GrThreadSafeCache::CreateLazyView(GrDirectContext* dContext,
     // what skgpu::v1::SurfaceDrawContext::MakeWithFallback does
     GrSwizzle swizzle = dContext->priv().caps()->getReadSwizzle(format, newCT);
 
-    return {{std::move(proxy), origin, swizzle}, std::move(trampoline)};
+    return std::tuple<GrSurfaceProxyView, sk_sp<GrThreadSafeCache::Trampoline>>(GrSurfaceProxyView(std::move(proxy), origin, swizzle), std::move(trampoline));
 }

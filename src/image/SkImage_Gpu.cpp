@@ -828,15 +828,16 @@ std::tuple<GrSurfaceProxyView, GrColorType> SkImage_Gpu::onAsView(
         return {};
     }
     if (policy != GrImageTexGenPolicy::kDraw) {
-        return {CopyView(recordingContext, this->makeView(recordingContext), mipmapped, policy),
-                SkColorTypeToGrColorType(this->colorType())};
+        return std::make_tuple(
+          CopyView(recordingContext, this->makeView(recordingContext), mipmapped, policy),
+          SkColorTypeToGrColorType(this->colorType()));
     }
     GrSurfaceProxyView view = this->makeView(recordingContext);
     GrColorType ct = SkColorTypeToGrColorType(this->colorType());
     if (mipmapped == GrMipmapped::kYes) {
         view = FindOrMakeCachedMipmappedView(recordingContext, std::move(view), this->uniqueID());
     }
-    return {std::move(view), ct};
+    return std::make_tuple(std::move(view), ct);
 }
 
 std::unique_ptr<GrFragmentProcessor> SkImage_Gpu::onAsFragmentProcessor(

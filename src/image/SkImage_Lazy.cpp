@@ -251,7 +251,7 @@ std::tuple<GrSurfaceProxyView, GrColorType> SkImage_Lazy::onAsView(
         GrMipmapped mipmapped,
         GrImageTexGenPolicy policy) const {
     GrColorType ct = this->colorTypeOfLockTextureProxy(context->priv().caps());
-    return {this->lockTextureProxyView(context, policy, mipmapped), ct};
+    return std::make_tuple(this->lockTextureProxyView(context, policy, mipmapped), ct);
 }
 
 std::unique_ptr<GrFragmentProcessor> SkImage_Lazy::onAsFragmentProcessor(

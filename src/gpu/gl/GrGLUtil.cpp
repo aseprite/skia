@@ -526,7 +526,7 @@ static std::tuple<GrGLDriver, GrGLDriverVersion> get_driver_and_version(GrGLStan
             }
         }
     }
-    return {driver, driverVersion};
+    return std::tuple<GrGLDriver, GrGLDriverVersion>(driver, driverVersion);
 }
 
 // If this is detected as ANGLE then the ANGLE backend is returned along with rendererString
@@ -542,14 +542,14 @@ static std::tuple<GrGLANGLEBackend, SkString> get_angle_backend(const char* rend
         SkString innerString;
         innerString.set(rendererString + kHeaderLength, rendererLength - kHeaderLength - 1);
         if (strstr(rendererString, "Direct3D11")) {
-            return {GrGLANGLEBackend::kD3D11, std::move(innerString)};
+            return std::tuple<GrGLANGLEBackend, SkString>(GrGLANGLEBackend::kD3D11, std::move(innerString));
         } else if (strstr(rendererString, "Direct3D9")) {
-            return {GrGLANGLEBackend::kD3D9, std::move(innerString)};
+            return std::tuple<GrGLANGLEBackend, SkString>(GrGLANGLEBackend::kD3D9, std::move(innerString));
         } else if (strstr(rendererString, "OpenGL")) {
-            return {GrGLANGLEBackend::kOpenGL, std::move(innerString)};
+            return std::tuple<GrGLANGLEBackend, SkString>(GrGLANGLEBackend::kOpenGL, std::move(innerString));
         }
     }
-    return {GrGLANGLEBackend::kUnknown, {}};
+    return std::tuple<GrGLANGLEBackend, SkString>(GrGLANGLEBackend::kUnknown, {});
 }
 
 static std::tuple<GrGLVendor, GrGLRenderer, GrGLDriver, GrGLDriverVersion>
@@ -560,10 +560,11 @@ get_angle_gl_vendor_and_renderer(
     SkStrSplit(innerString, ",", &parts);
     // This would need some fixing if we have substrings that contain commas.
     if (parts.size() != 3) {
-        return {GrGLVendor::kOther,
-                GrGLRenderer::kOther,
-                GrGLDriver::kUnknown,
-                GR_GL_DRIVER_UNKNOWN_VER};
+        return std::tuple<GrGLVendor, GrGLRenderer, GrGLDriver, GrGLDriverVersion>(
+            GrGLVendor::kOther,
+            GrGLRenderer::kOther,
+            GrGLDriver::kUnknown,
+            GR_GL_DRIVER_UNKNOWN_VER);
     }
 
     const char* angleVendorString   = parts[0].c_str();
@@ -580,7 +581,8 @@ get_angle_gl_vendor_and_renderer(
 
     auto angleRenderer = get_renderer(angleRendererString, extensions);
 
-    return {angleVendor, angleRenderer, angleDriver, angleDriverVersion};
+    return std::tuple<GrGLVendor, GrGLRenderer, GrGLDriver, GrGLDriverVersion>(
+        angleVendor, angleRenderer, angleDriver, angleDriverVersion);
 }
 
 static std::tuple<GrGLVendor, GrGLRenderer, GrGLDriver, GrGLDriverVersion>
@@ -631,7 +633,8 @@ get_angle_d3d_vendor_and_renderer(const char* innerString) {
         vendor = GrGLVendor::kATI;
     }
     // We haven't had a need yet to parse the D3D driver string.
-    return {vendor, renderer, GrGLDriver::kUnknown, GR_GL_DRIVER_UNKNOWN_VER};
+    return std::tuple<GrGLVendor, GrGLRenderer, GrGLDriver, GrGLDriverVersion>(
+        vendor, renderer, GrGLDriver::kUnknown, GR_GL_DRIVER_UNKNOWN_VER);
 }
 
 GrGLDriverInfo GrGLGetDriverInfo(const GrGLInterface* interface) {

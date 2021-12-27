@@ -425,9 +425,9 @@ std::tuple<GrSurfaceProxyView, GrColorType> SkImage_Raster::onAsView(
         // if mipmapping is desired (skbug.com/10411)
         mipmapped = GrMipmapped::kNo;
         if (policy != GrImageTexGenPolicy::kDraw) {
-            return {CopyView(rContext, fPinnedView, mipmapped, policy), fPinnedColorType};
+            return std::make_tuple(CopyView(rContext, fPinnedView, mipmapped, policy), fPinnedColorType);
         }
-        return {fPinnedView, fPinnedColorType};
+        return std::make_tuple(fPinnedView, fPinnedColorType);
     }
     if (policy == GrImageTexGenPolicy::kDraw) {
         return GrMakeCachedBitmapProxyView(rContext, fBitmap, mipmapped);

@@ -116,7 +116,7 @@ std::tuple<sk_sp<SkImageFilter>, SkSVGColorspace> SkSVGFilterContext::getInput(
             break;
     }
 
-    return {result, inputCS};
+    return std::make_tuple(result, inputCS);
 }
 
 SkSVGColorspace SkSVGFilterContext::resolveInputColorspace(

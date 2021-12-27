@@ -55,7 +55,7 @@ GrMatrixConvolutionEffect::KernelWrapper::Make(GrRecordingContext* rContext,
         for (int i = 0; i < length; i++) {
             result.fArray[i] = SkScalarToFloat(values[i]);
         }
-        return {result, nullptr};
+        return MakeResult(result, nullptr);
     }
 
     BiasAndGain& scalableSampler = result.fBiasAndGain;
@@ -106,7 +106,7 @@ GrMatrixConvolutionEffect::KernelWrapper::Make(GrRecordingContext* rContext,
     if (kCacheKernelTexture && (view = threadSafeCache->find(key))) {
         SkASSERT(view.origin() == kTopLeft_GrSurfaceOrigin);
         auto kernelFP = GrTextureEffect::Make(std::move(view), kUnknown_SkAlphaType);
-        return {result, std::move(kernelFP)};
+        return MakeResult(result, std::move(kernelFP));
     }
 
     SkBitmap bm;
@@ -135,7 +135,7 @@ GrMatrixConvolutionEffect::KernelWrapper::Make(GrRecordingContext* rContext,
 
     SkASSERT(view.origin() == kTopLeft_GrSurfaceOrigin);
     auto kernelFP = GrTextureEffect::Make(std::move(view), kUnknown_SkAlphaType);
-    return {result, std::move(kernelFP)};
+    return MakeResult(result, std::move(kernelFP));
 }
 
 bool GrMatrixConvolutionEffect::KernelWrapper::operator==(const KernelWrapper& k) const {

@@ -91,6 +91,7 @@ jobs:
         export dst=Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
         mkdir $dst
         $cp -R --parents \
+          out/${{ matrix.mode }}-${{ matrix.arch }}/args.gn \
           out/${{ matrix.mode }}-${{ matrix.arch }}/*.$libext \
           include \
           modules/particles/include/*.h \

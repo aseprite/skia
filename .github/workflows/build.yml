@@ -9,11 +9,16 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-18.04]
         mode: [Release, Debug]
         arch: [x64, x86, arm64]
+        libcxx: [libstdc++, libc++]
         exclude:
-          - os: macos-latest
-            arch: x86
           - os: windows-latest
             arch: arm64
+          - os: windows-latest
+            libcxx: libc++
+          - os: macos-latest
+            arch: x86
+          - os: macos-latest
+            libcxx: libc++
           - os: ubuntu-18.04
             arch: arm64
     steps:
@@ -70,7 +75,7 @@ jobs:
             export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.9"] extra_cflags_cc=["-frtti"]'
           fi
         else
-          export gn_flags='cc="clang-10" cxx="clang++-10" extra_cflags_cc=["-stdlib=libc++"] extra_ldflags=["-stdlib=libc++"]'
+          export gn_flags='cc="clang-10" cxx="clang++-10" extra_cflags_cc=["-stdlib=${{ matrix.libcxx }}"] extra_ldflags=["-stdlib=${{ matrix.libcxx }}"]'
         fi
         gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
     - name: Compiling
@@ -89,6 +94,10 @@ jobs:
           export cp=cp
         fi
         export dst=Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+        if [[ "${{ runner.os }}" == "Linux" ]] ; then
+          export dst=$dst-${{ matrix.libcxx }}
+        fi
+
         mkdir $dst
         $cp -R --parents \
           out/${{ matrix.mode }}-${{ matrix.arch }}/args.gn \
@@ -126,8 +135,15 @@ jobs:
           third_party/externals/zlib/LICENSE \
           third_party/externals/zlib/*.h \
           $dst
-    - name: Uploading Artifact
+    - name: Uploading Artifact (Windows, macOS)
       uses: actions/upload-artifact@v1
+      if: runner.os != 'Linux'
       with:
         name: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
         path: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+    - name: Uploading Artifact (Linux)
+      uses: actions/upload-artifact@v1
+      if: runner.os == 'Linux'
+      with:
+        name: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}-${{ matrix.libcxx }}
+        path: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}-${{ matrix.libcxx }}

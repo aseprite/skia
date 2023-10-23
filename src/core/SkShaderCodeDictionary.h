@@ -11,6 +11,7 @@
 #include <array>
 #include <unordered_map>
 #include <vector>
+#include <string>
 #include "include/core/SkSpan.h"
 #include "include/private/SkSpinlock.h"
 #include "include/private/SkUniquePaintParamsID.h"

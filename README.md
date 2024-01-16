@@ -39,10 +39,11 @@ and uncompress it in some place like `C:\deps\depot_tools`.
 to get better performance. So you will need to [download Clang](https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/LLVM-13.0.0-win64.exe),
 and install it on a folder like `C:\deps\llvm` (a folder without whitespaces).
 
-Open a [developer command prompt](https://docs.microsoft.com/en-us/dotnet/framework/tools/developer-command-prompt-for-vs)
-or command line (`cmd.exe`) and call:
+Open a command prompt window (`cmd.exe`) and call:
 
     call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat" -arch=x64
+
+The command above is required while attempting to compile the 64-bit version of skia. When compiling the 32-bit version, it is possible to open a [developer command prompt](https://docs.microsoft.com/en-us/dotnet/framework/tools/developer-command-prompt-for-vs) instead.
 
 Then:
 

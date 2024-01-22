@@ -13,7 +13,7 @@ This fork is used to compile Skia automatically for
 
 In the following sections you will find straightforward steps to
 compile Skia. You can always check the [official Skia
-instructions](https://skia.org/user/build) and select the OS you are
+instructions](https://skia.org/docs/user/build) and select the OS you are
 building for. [Aseprite](https://github.com/aseprite/aseprite) and
 [laf](https://github.com/aseprite/laf) use the **`aseprite-m102`** branch.
 So remember to checkout that specific branch.

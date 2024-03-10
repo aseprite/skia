@@ -12,8 +12,6 @@ jobs:
         exclude:
           - os: macos-latest
             arch: x86
-          - os: windows-latest
-            arch: arm64
           - os: ubuntu-20.04
             arch: arm64
     steps:
@@ -58,7 +56,11 @@ jobs:
           export is_official=true
         fi
         if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          export gn_flags='is_trivial_abi=false win_vc="C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC" win_toolchain_version="15.0" win_sdk="C:\\Program Files (x86)\\Windows Kits\\10" win_sdk_version="10.0.18362.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="16.0.0"'
+          if [[ "${{ matrix.arch }}" == arm64 ]] ; then
+            export gn_flags='is_trivial_abi=false win_vc="C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC" win_toolchain_version="15.0" win_sdk="C:\\Program Files (x86)\\Windows Kits\\10" win_sdk_version="10.0.18362.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="16.0.0" skia_use_angle=true'
+          else
+            export gn_flags='is_trivial_abi=false win_vc="C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC" win_toolchain_version="15.0" win_sdk="C:\\Program Files (x86)\\Windows Kits\\10" win_sdk_version="10.0.18362.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="16.0.0"'
+          fi
           if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
             export gn_flags="$gn_flags extra_cflags=[\"-MTd\"]"
           else

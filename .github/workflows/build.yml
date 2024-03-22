@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-18.04]
+        os: [windows-latest, macos-latest, ubuntu-20.04]
         mode: [Release, Debug]
         arch: [x64, x86, arm64]
         exclude:
@@ -14,7 +14,7 @@ jobs:
             arch: x86
           - os: windows-latest
             arch: arm64
-          - os: ubuntu-18.04
+          - os: ubuntu-20.04
             arch: arm64
     steps:
     - uses: actions/checkout@v4
@@ -27,12 +27,9 @@ jobs:
         elif [[ "${{ runner.os }}" == "macOS" ]] ; then
           brew install coreutils
         else
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main"
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt-get update -qq
           sudo apt-get install -y \
-            git g++ g++-multilib clang-10 libc++-10-dev pandoc dpkg-dev \
+            git g++ g++-multilib clang-12 pandoc dpkg-dev \
             libcurl4-openssl-dev libgif-dev libjpeg-dev \
             libz-dev libpng-dev libtinyxml-dev libpixman-1-dev \
             libx11-dev libxcursor-dev ninja-build zip unzip \
@@ -70,7 +67,7 @@ jobs:
             export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.9"] extra_cflags_cc=["-frtti"]'
           fi
         else
-          export gn_flags='cc="clang-10" cxx="clang++-10" extra_cflags_cc=["-stdlib=libc++"] extra_ldflags=["-stdlib=libc++"]'
+          export gn_flags='cc="clang-12" cxx="clang++-12"'
         fi
         gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
     - name: Compiling

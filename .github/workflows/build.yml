@@ -58,7 +58,7 @@ jobs:
           export is_official=true
         fi
         if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          export gn_flags='win_vc="C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC" win_toolchain_version="15.0" win_sdk="C:\\Program Files (x86)\\Windows Kits\\10" win_sdk_version="10.0.18362.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="9.0.0"'
+          export gn_flags='is_trivial_abi=false win_vc="C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC" win_toolchain_version="17.9" win_sdk="C:\\Program Files\\Windows Kits\\10" win_sdk_version="10.0.22621.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="16.0.0"'
           if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
             export gn_flags="$gn_flags extra_cflags=[\"-MTd\"]"
           else
@@ -73,7 +73,7 @@ jobs:
         else
           export gn_flags='cc="clang-12" cxx="clang++-12"'
         fi
-        gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
+        gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
     - name: Compiling
       run: ninja -C out/${{ matrix.mode }}-${{ matrix.arch }} skia modules
     - name: Copying Files

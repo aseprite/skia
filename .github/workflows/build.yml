@@ -1,0 +1,208 @@
+name: Build
+on: push
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, macos-latest, ubuntu-22.04]
+        mode: [Release, Debug]
+        arch: [x64, x86, arm64]
+        exclude:
+          - os: macos-latest
+            arch: x86
+          - os: windows-2022
+            arch: arm64
+          - os: ubuntu-22.04
+            arch: arm64
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          choco install llvm
+          choco install zip
+        elif [[ "${{ runner.os }}" == "macOS" ]] ; then
+          brew install coreutils
+        else
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            git g++ g++-multilib clang-15 pandoc dpkg-dev \
+            libcurl4-openssl-dev libgif-dev libjpeg-dev \
+            libz-dev libpng-dev libtinyxml-dev libpixman-1-dev \
+            libx11-dev libxcursor-dev ninja-build zip unzip \
+            libfontconfig-dev libgl1-mesa-dev
+        fi
+    - name: Download depot_tools
+      shell: bash
+      run: |
+        git clone 'https://chromium.googlesource.com/chromium/tools/depot_tools.git'
+        cd depot_tools && ./update_depot_tools
+    - name: Add depot_tools path
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      run: |
+        echo "::add-path::${PWD}/depot_tools"
+    - name: Sync Deps
+      env:
+        GIT_SYNC_DEPS_SKIP_EMSDK: true
+      run: python3 tools/git-sync-deps
+    - name: Fetch Ninja
+      run: python3 bin/fetch-ninja
+    - name: Generating Ninja Files
+      shell: bash
+      run: |
+        if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
+          export is_debug=true
+          export is_official=false
+        else
+          export is_debug=false
+          export is_official=true
+        fi
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          export gn_flags='is_trivial_abi=false win_vc="C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC" win_toolchain_version="17.9" win_sdk="C:\\Program Files\\Windows Kits\\10" win_sdk_version="10.0.22621.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM"'
+          if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
+            export gn_flags="$gn_flags extra_cflags=[\"-MTd\"]"
+          else
+            export gn_flags="$gn_flags extra_cflags=[\"-MT\"]"
+          fi
+        elif [[ "${{ runner.os }}" == "macOS" ]] ; then
+          if [[ "${{ matrix.arch }}" == arm64 ]] ; then
+            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=11.0"] extra_cflags_cc=["-frtti"]'
+          else
+            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.14"] extra_cflags_cc=["-frtti"]'
+          fi
+        else
+          export gn_flags='cc="clang-15" cxx="clang++-15"'
+        fi
+        gn gen out/${{ matrix.mode }}-${{ matrix.arch }} --args="is_debug=$is_debug is_official_build=$is_official skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false skia_use_partition_alloc=false skia_enable_pdf=false target_cpu=\"${{ matrix.arch }}\" $gn_flags"
+    - name: Compiling
+      run: ninja -C out/${{ matrix.mode }}-${{ matrix.arch }} skia modules
+    - name: Copying Files
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]] ; then
+          export libext=lib
+        else
+          export libext=a
+        fi
+        if [[ "${{ runner.os }}" == "macOS" ]] ; then
+          export cp=gcp
+        else
+          export cp=cp
+        fi
+        export dst=Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+        mkdir $dst
+        $cp -R --parents \
+          out/${{ matrix.mode }}-${{ matrix.arch }}/args.gn \
+          out/${{ matrix.mode }}-${{ matrix.arch }}/*.$libext \
+          LICENSE \
+          include \
+          modules/skcms/*.h \
+          modules/skcms/src/*.h \
+          modules/skottie/include/*.h \
+          modules/skparagraph/include/*.h \
+          modules/skplaintexteditor/include/*.h \
+          modules/skresources/include/*.h \
+          modules/sksg/include/*.h \
+          modules/skshaper/include/*.h \
+          modules/skunicode/include/*.h \
+          modules/svg/include/*.h \
+          src/capture/*.h \
+          src/codec/*.h \
+          src/core/*.h \
+          src/effects/*.h \
+          src/effects/colorfilters/*.h \
+          src/effects/imagefilters/*.h \
+          src/encode/*.h \
+          src/gpu/*.h \
+          src/gpu/ganesh/d3d/*.h \
+          src/gpu/ganesh/effects/*.h \
+          src/gpu/ganesh/geometry/*.h \
+          src/gpu/ganesh/gl/*.h \
+          src/gpu/ganesh/gl/builders/*.h \
+          src/gpu/ganesh/glsl/*.h \
+          src/gpu/ganesh/gradients/*.h \
+          src/gpu/ganesh/image/*.h \
+          src/gpu/ganesh/mock/*.h \
+          src/gpu/ganesh/mtl/*.h \
+          src/gpu/ganesh/ops/*.h \
+          src/gpu/ganesh/surface/*.h \
+          src/gpu/ganesh/tessellate/*.h \
+          src/gpu/ganesh/text/*.h \
+          src/gpu/ganesh/vk/*.h \
+          src/gpu/graphite/*.h \
+          src/gpu/graphite/compute/*.h \
+          src/gpu/graphite/dawn/*.h \
+          src/gpu/graphite/geom/*.h \
+          src/gpu/graphite/mtl/*.h \
+          src/gpu/graphite/precompile/*.h \
+          src/gpu/graphite/render/*.h \
+          src/gpu/graphite/task/*.h \
+          src/gpu/graphite/text/*.h \
+          src/gpu/graphite/vk/*.h \
+          src/gpu/mtl/*.h \
+          src/gpu/tessellate/*.h \
+          src/gpu/vk/*.h \
+          src/gpu/vk/vulkanmemoryallocator/*.h \
+          src/image/*.h \
+          src/lazy/*.h \
+          src/opts/*.h \
+          src/pathops/*.h \
+          src/ports/*.h \
+          src/sfnt/*.h \
+          src/shaders/*.h \
+          src/shaders/gradients/*.h \
+          src/sksl/*.h \
+          src/sksl/analysis/*.h \
+          src/sksl/codegen/*.h \
+          src/sksl/ir/*.h \
+          src/sksl/lex/*.h \
+          src/sksl/tracing/*.h \
+          src/sksl/transform/*.h \
+          src/svg/*.h \
+          src/text/*.h \
+          src/text/gpu/*.h \
+          src/utils/*.h \
+          src/utils/mac/*.h \
+          src/utils/win/*.h \
+          src/xml/*.h \
+          src/xps/*.h \
+          third_party/externals/angle2/LICENSE \
+          third_party/externals/angle2/include \
+          third_party/externals/freetype/LICENSE.TXT \
+          third_party/externals/freetype/docs/FTL.TXT \
+          third_party/externals/freetype/docs/GPLv2.TXT \
+          third_party/externals/freetype/include \
+          third_party/externals/harfbuzz/COPYING \
+          third_party/externals/harfbuzz/src/*.h \
+          third_party/externals/icu/LICENSE \
+          third_party/externals/icu/flutter/icudtl.dat \
+          third_party/externals/libjpeg-turbo/LICENSE.md \
+          third_party/externals/libjpeg-turbo/src/jconfig.h \
+          third_party/externals/libjpeg-turbo/src/jerror.h \
+          third_party/externals/libjpeg-turbo/src/jmorecfg.h \
+          third_party/externals/libjpeg-turbo/src/jpeglib.h \
+          third_party/externals/libjpeg-turbo/src/turbojpeg.h \
+          third_party/externals/libpng/*.h \
+          third_party/externals/libpng/LICENSE \
+          third_party/externals/libwebp/COPYING \
+          third_party/externals/libwebp/PATENTS \
+          third_party/externals/libwebp/src/dec/*.h \
+          third_party/externals/libwebp/src/dsp/*.h \
+          third_party/externals/libwebp/src/enc/*.h \
+          third_party/externals/libwebp/src/mux/*.h \
+          third_party/externals/libwebp/src/utils/*.h \
+          third_party/externals/libwebp/src/webp/*.h \
+          third_party/externals/swiftshader/LICENSE.txt \
+          third_party/externals/swiftshader/include \
+          third_party/externals/zlib/*.h \
+          third_party/externals/zlib/LICENSE \
+          $dst
+    - name: Uploading Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}
+        path: Skia-${{ runner.os }}-${{ matrix.mode }}-${{ matrix.arch }}

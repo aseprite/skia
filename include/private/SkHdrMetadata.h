@@ -61,7 +61,11 @@ struct SK_API ContentLightLevelInformation {
      * with libraries using the CTA semantics.
      */
     static ContentLightLevelInformation MakeUint16(uint16_t maxCLL, uint16_t maxFALL) {
+#if 0 // Avoid MSVC error C7555: use of designated initializers requires at least '/std:c++20'
         return { .fMaxCLL = static_cast<float>(maxCLL), .fMaxFALL = static_cast<float>(maxFALL) };
+#else
+        return { static_cast<float>(maxCLL), static_cast<float>(maxFALL) };
+#endif
     }
     uint16_t getUint16MaxCLL() const {
         return static_cast<uint16_t>(std::clamp(std::round(fMaxCLL), 0.f, 65535.f));

@@ -42,7 +42,11 @@ jobs:
         git clone 'https://chromium.googlesource.com/chromium/tools/depot_tools.git'
         echo "::add-path::${PWD}/depot_tools"
     - name: Sync Deps
-      run: python tools/git-sync-deps
+      env:
+        GIT_SYNC_DEPS_SKIP_EMSDK: true
+      run: python3 tools/git-sync-deps
+    - name: Fetch Ninja
+      run: python3 bin/fetch-ninja
     - name: Generating Ninja Files
       shell: bash
       run: |

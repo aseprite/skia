@@ -108,6 +108,7 @@ jobs:
           modules/svg/include/*.h \
           src/core/*.h \
           src/gpu/ganesh/gl/*.h \
+          src/image/*.h \
           third_party/externals/angle2/LICENSE \
           third_party/externals/angle2/include \
           third_party/externals/freetype/LICENSE.TXT \

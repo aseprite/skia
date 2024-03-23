@@ -9,6 +9,7 @@
 #define SkShaderCodeDictionary_DEFINED
 
 #include <array>
+#include <string>
 #include <unordered_map>
 #include <vector>
 #include "include/core/SkSpan.h"

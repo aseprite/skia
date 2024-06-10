@@ -22,7 +22,6 @@ jobs:
       shell: bash
       run: |
         if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          choco install llvm
           choco install zip
         elif [[ "${{ runner.os }}" == "macOS" ]] ; then
           brew install coreutils
@@ -47,6 +46,11 @@ jobs:
       run: python3 tools/git-sync-deps
     - name: Fetch Ninja
       run: python3 bin/fetch-ninja
+    - name: Install LLVM and Clang 18
+      if: runner.os == 'Windows'
+      uses: KyleMayes/install-llvm-action@v2
+      with:
+        version: "18.1"
     - name: Generating Ninja Files
       shell: bash
       run: |
@@ -58,7 +62,8 @@ jobs:
           export is_official=true
         fi
         if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          export gn_flags='is_trivial_abi=false win_vc="C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC" win_toolchain_version="17.9" win_sdk="C:\\Program Files\\Windows Kits\\10" win_sdk_version="10.0.22621.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="16.0.0"'
+          clang++ --version
+          export gn_flags='is_trivial_abi=false win_vc="C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC" win_toolchain_version="17.10" win_sdk="C:\\Program Files\\Windows Kits\\10" win_sdk_version="10.0.22621.0" cc="clang" cxx="clang++" clang_win="C:\Program Files\LLVM" clang_win_version="18.1"'
           if [[ "${{ matrix.mode }}" == "Debug" ]] ; then
             export gn_flags="$gn_flags extra_cflags=[\"-MTd\"]"
           else

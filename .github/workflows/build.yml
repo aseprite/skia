@@ -106,9 +106,65 @@ jobs:
           modules/skshaper/include/*.h \
           modules/skunicode/include/*.h \
           modules/svg/include/*.h \
+          src/base/*.h \
+          src/codec/*.h \
           src/core/*.h \
+          src/effects/*.h \
+          src/effects/colorfilters/*.h \
+          src/encode/*.h \
+          src/gpu/*.h \
+          src/gpu/ganesh/*.h \
+          src/gpu/ganesh/d3d/*.h \
+          src/gpu/ganesh/effects/*.h \
+          src/gpu/ganesh/geometry/*.h \
           src/gpu/ganesh/gl/*.h \
+          src/gpu/ganesh/gl/builders/*.h \
+          src/gpu/ganesh/glsl/*.h \
+          src/gpu/ganesh/gradients/*.h \
+          src/gpu/ganesh/image/*.h \
+          src/gpu/ganesh/mock/*.h \
+          src/gpu/ganesh/mtl/*.h \
+          src/gpu/ganesh/ops/*.h \
+          src/gpu/ganesh/surface/*.h \
+          src/gpu/ganesh/tessellate/*.h \
+          src/gpu/ganesh/text/*.h \
+          src/gpu/ganesh/vk/*.h \
+          src/gpu/graphite/*.h \
+          src/gpu/graphite/compute/*.h \
+          src/gpu/graphite/dawn/*.h \
+          src/gpu/graphite/geom/*.h \
+          src/gpu/graphite/mtl/*.h \
+          src/gpu/graphite/render/*.h \
+          src/gpu/graphite/text/*.h \
+          src/gpu/graphite/vk/*.h \
+          src/gpu/mtl/*.h \
+          src/gpu/tessellate/*.h \
+          src/gpu/vk/*.h \
+          src/gpu/vk/vulkanmemoryallocator/*.h \
           src/image/*.h \
+          src/lazy/*.h \
+          src/opts/*.h \
+          src/pathops/*.h \
+          src/pdf/*.h \
+          src/ports/*.h \
+          src/sfnt/*.h \
+          src/shaders/*.h \
+          src/shaders/gradients/*.h \
+          src/sksl/*.h \
+          src/sksl/analysis/*.h \
+          src/sksl/codegen/*.h \
+          src/sksl/ir/*.h \
+          src/sksl/lex/*.h \
+          src/sksl/tracing/*.h \
+          src/sksl/transform/*.h \
+          src/svg/*.h \
+          src/text/*.h \
+          src/text/gpu/*.h \
+          src/utils/*.h \
+          src/utils/mac/*.h \
+          src/utils/win/*.h \
+          src/xml/*.h \
+          src/xps/*.h \
           third_party/externals/angle2/LICENSE \
           third_party/externals/angle2/include \
           third_party/externals/freetype/LICENSE.TXT \

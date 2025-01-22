@@ -8,11 +8,13 @@
 #ifndef SkConvertPixels_DEFINED
 #define SkConvertPixels_DEFINED
 
+#include "include/private/base/SkAPI.h"
+
 #include <cstddef>
 
 struct SkImageInfo;
 
-[[nodiscard]] bool SkConvertPixels(
+[[nodiscard]] SK_API bool SkConvertPixels(
         const SkImageInfo& dstInfo,       void* dstPixels, size_t dstRowBytes,
         const SkImageInfo& srcInfo, const void* srcPixels, size_t srcRowBytes);
 

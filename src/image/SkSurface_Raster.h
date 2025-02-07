@@ -49,6 +49,8 @@ public:
     void onRestoreBackingMutability() override;
     sk_sp<const SkCapabilities> onCapabilities() override;
 
+    SkBitmap& skBitmap() { return fBitmap; }
+
 private:
     SkBitmap    fBitmap;
     bool        fWeOwnThePixels;

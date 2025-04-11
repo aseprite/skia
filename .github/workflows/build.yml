@@ -181,11 +181,11 @@ jobs:
           third_party/externals/icu/LICENSE \
           third_party/externals/icu/flutter/icudtl.dat \
           third_party/externals/libjpeg-turbo/LICENSE.md \
-          third_party/externals/libjpeg-turbo/jconfig.h \
-          third_party/externals/libjpeg-turbo/jerror.h \
-          third_party/externals/libjpeg-turbo/jmorecfg.h \
-          third_party/externals/libjpeg-turbo/jpeglib.h \
-          third_party/externals/libjpeg-turbo/turbojpeg.h \
+          third_party/externals/libjpeg-turbo/src/jconfig.h \
+          third_party/externals/libjpeg-turbo/src/jerror.h \
+          third_party/externals/libjpeg-turbo/src/jmorecfg.h \
+          third_party/externals/libjpeg-turbo/src/jpeglib.h \
+          third_party/externals/libjpeg-turbo/src/turbojpeg.h \
           third_party/externals/libpng/*.h \
           third_party/externals/libpng/LICENSE \
           third_party/externals/libwebp/COPYING \

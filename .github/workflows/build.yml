@@ -6,16 +6,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-22.04]
+        os: [windows-latest, windows-11-arm, macos-latest, ubuntu-22.04, ubuntu-22.04-arm]
         mode: [Release, Debug]
         arch: [x64, x86, arm64]
         exclude:
-          - os: macos-latest
-            arch: x86
           - os: windows-latest
             arch: arm64
+          - os: windows-11-arm
+            arch: x86
+          - os: windows-11-arm
+            arch: x64
+          - os: macos-latest
+            arch: x86
           - os: ubuntu-22.04
             arch: arm64
+          - os: ubuntu-22.04-arm
+            arch: x64
+          - os: ubuntu-22.04-arm
+            arch: x86
     steps:
     - uses: actions/checkout@v4
     - name: Install Dependencies
@@ -28,11 +36,14 @@ jobs:
         else
           sudo apt-get update -qq
           sudo apt-get install -y \
-            git g++ g++-multilib clang-12 pandoc dpkg-dev \
+            git g++ clang-12 pandoc dpkg-dev \
             libcurl4-openssl-dev libgif-dev libjpeg-dev \
             libz-dev libpng-dev libtinyxml-dev libpixman-1-dev \
             libx11-dev libxcursor-dev ninja-build zip unzip \
             libfontconfig-dev libgl1-mesa-dev
+          if [[ "${{ matrix.arch }}" == "x86" ]] ; then
+            sudo apt-get install -y g++-multilib
+          fi
         fi
     - name: Download depot_tools
       env:

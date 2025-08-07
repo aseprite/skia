@@ -49,12 +49,7 @@ Then:
 
     set PATH=C:\deps\depot_tools;%PATH%
     cd C:\deps\depot_tools
-    gclient sync
-
-(The `gclient` command might print an error like
-`Error: client not configured; see 'gclient config'`.
-Just ignore it.)
-
+    update_depot_tools.bat
     cd C:\deps
     git clone -b aseprite-m124 https://github.com/aseprite/skia.git
     cd skia
@@ -100,6 +95,7 @@ several minutes to finish:
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
     git clone -b aseprite-m124 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
+    update_depot_tools
     cd skia
     python3 tools/git-sync-deps
     python3 bin/fetch-ninja
@@ -126,6 +122,7 @@ several minutes to finish:
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
     git clone -b aseprite-m124 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
+    update_depot_tools
     cd skia
     python3 tools/git-sync-deps
     python3 bin/fetch-ninja

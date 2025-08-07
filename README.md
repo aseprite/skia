@@ -15,7 +15,7 @@ In the following sections you will find straightforward steps to
 compile Skia. You can always check the [official Skia
 instructions](https://skia.org/docs/user/build) and select the OS you are
 building for. [Aseprite](https://github.com/aseprite/aseprite) and
-[laf](https://github.com/aseprite/laf) use the **`aseprite-m124`** branch.
+[laf](https://github.com/aseprite/laf) use the **`aseprite-m140`** branch.
 So remember to checkout that specific branch.
 
 These are the platform-specific steps to compile Skia:
@@ -51,7 +51,7 @@ Then:
     cd C:\deps\depot_tools
     update_depot_tools.bat
     cd C:\deps
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m140 https://github.com/aseprite/skia.git
     cd skia
     set GIT_EXECUTABLE=git.bat
     python3 tools/git-sync-deps
@@ -93,7 +93,7 @@ several minutes to finish:
     mkdir $HOME/deps
     cd $HOME/deps
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m140 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
     update_depot_tools
     cd skia
@@ -120,7 +120,7 @@ several minutes to finish:
     mkdir $HOME/deps
     cd $HOME/deps
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m140 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
     update_depot_tools
     cd skia

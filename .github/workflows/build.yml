@@ -36,10 +36,14 @@ jobs:
             libfontconfig-dev libgl1-mesa-dev
         fi
     - name: Download depot_tools
+      shell: bash
+      run: |
+        git clone 'https://chromium.googlesource.com/chromium/tools/depot_tools.git'
+        cd depot_tools && ./update_depot_tools
+    - name: Add depot_tools path
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       run: |
-        git clone 'https://chromium.googlesource.com/chromium/tools/depot_tools.git'
         echo "::add-path::${PWD}/depot_tools"
     - name: Sync Deps
       env:

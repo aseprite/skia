@@ -15,7 +15,7 @@ In the following sections you will find straightforward steps to
 compile Skia. You can always check the [official Skia
 instructions](https://skia.org/docs/user/build) and select the OS you are
 building for. [Aseprite](https://github.com/aseprite/aseprite) and
-[laf](https://github.com/aseprite/laf) use the **`aseprite-m124`** branch.
+[laf](https://github.com/aseprite/laf) use the **`aseprite-m148`** branch.
 So remember to checkout that specific branch.
 
 These are the platform-specific steps to compile Skia:
@@ -36,7 +36,7 @@ Download
 and uncompress it in some place like `C:\deps\depot_tools`.
 
 [It's recommended to compile Skia with Clang](https://github.com/google/skia/blob/master/site/user/build.md#a-note-on-software-backend-performance)
-to get better performance. So you will need to [download Clang](https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/LLVM-17.0.6-win64.exe),
+to get better performance. So you will need to [download Clang](https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-win64.exe),
 and install it on a folder like `C:\deps\llvm` (a folder without whitespaces).
 
 Open a command prompt window (`cmd.exe`) and call:
@@ -51,7 +51,7 @@ Then:
     cd C:\deps\depot_tools
     update_depot_tools.bat
     cd C:\deps
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m148 https://github.com/aseprite/skia.git
     cd skia
     set GIT_EXECUTABLE=git.bat
     python3 tools/git-sync-deps
@@ -64,7 +64,7 @@ fails.)
 Finally, if you've downloaded Clang, use this command:
 
     set PATH=C:\deps\llvm\bin;%PATH%
-    gn gen out/Release-x64 --args="is_debug=false is_official_build=true is_trivial_abi=false skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=""x64"" cc=""clang"" cxx=""clang++"" clang_win=""c:\deps\llvm"" clang_win_version=""17.0.6"" win_vc=""C:\Program Files\Microsoft Visual Studio\2022\Community\VC"" extra_cflags=[""-MT""]"
+    gn gen out/Release-x64 --args="is_debug=false is_official_build=true is_trivial_abi=false skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=""x64"" cc=""clang"" cxx=""clang++"" clang_win=""c:\deps\llvm"" win_vc=""C:\Program Files\Microsoft Visual Studio\2022\Community\VC"" extra_cflags=[""-MT""]"
     ninja -C out/Release-x64 skia modules
 
 If you haven't installed Clang, and want to compile Skia with MSVC
@@ -80,7 +80,7 @@ For debugging purposes you can compile the debug version of the
 library, e.g. for LLVM:
 
     set PATH=C:\deps\llvm\bin;%PATH%
-    gn gen out/Debug-x64 --args="is_debug=true is_official_build=false is_trivial_abi=false skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=""x64"" cc=""clang"" cxx=""clang++"" clang_win=""c:\deps\llvm"" clang_win_version=""17.0.6"" win_vc=""C:\Program Files\Microsoft Visual Studio\2022\Community\VC"" extra_cflags=[""-MTd""]"
+    gn gen out/Debug-x64 --args="is_debug=true is_official_build=false is_trivial_abi=false skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=""x64"" cc=""clang"" cxx=""clang++"" clang_win=""c:\deps\llvm"" win_vc=""C:\Program Files\Microsoft Visual Studio\2022\Community\VC"" extra_cflags=[""-MTd""]"
     ninja -C out/Debug-x64 skia modules
 
 ## Skia on macOS
@@ -93,7 +93,7 @@ several minutes to finish:
     mkdir $HOME/deps
     cd $HOME/deps
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m148 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
     update_depot_tools
     cd skia
@@ -120,7 +120,7 @@ several minutes to finish:
     mkdir $HOME/deps
     cd $HOME/deps
     git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-    git clone -b aseprite-m124 https://github.com/aseprite/skia.git
+    git clone -b aseprite-m148 https://github.com/aseprite/skia.git
     export PATH="${PWD}/depot_tools:${PATH}"
     update_depot_tools
     cd skia

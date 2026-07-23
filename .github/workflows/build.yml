@@ -12,8 +12,6 @@ jobs:
         exclude:
           - os: macos-latest
             arch: x86
-          - os: windows-2022
-            arch: arm64
           - os: ubuntu-22.04
             arch: arm64
     steps:

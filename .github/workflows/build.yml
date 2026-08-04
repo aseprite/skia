@@ -70,9 +70,9 @@ jobs:
           fi
         elif [[ "${{ runner.os }}" == "macOS" ]] ; then
           if [[ "${{ matrix.arch }}" == arm64 ]] ; then
-            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=11.0"] extra_cflags_cc=["-frtti"]'
+            export gn_flags='skia_use_metal=true extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=11.0"] extra_cflags_cc=["-frtti"]'
           else
-            export gn_flags='extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.14"] extra_cflags_cc=["-frtti"]'
+            export gn_flags='skia_use_metal=true extra_cflags=["-stdlib=libc++", "-mmacosx-version-min=10.14"] extra_cflags_cc=["-frtti"]'
           fi
         else
           export gn_flags='cc="clang-15" cxx="clang++-15"'

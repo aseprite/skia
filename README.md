@@ -99,7 +99,7 @@ several minutes to finish:
     cd skia
     python3 tools/git-sync-deps
     python3 bin/fetch-ninja
-    gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false skia_use_partition_alloc=false skia_enable_pdf=false target_cpu=\"x64\" extra_cflags=[\"-stdlib=libc++\", \"-mmacosx-version-min=10.14\"] extra_cflags_cc=[\"-frtti\"]"
+    gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false skia_use_partition_alloc=false skia_enable_pdf=false skia_use_metal=true target_cpu=\"x64\" extra_cflags=[\"-stdlib=libc++\", \"-mmacosx-version-min=10.14\"] extra_cflags_cc=[\"-frtti\"]"
     ninja -C out/Release-x64 skia modules
 
 ### Skia on macOS for Apple Silicon
@@ -107,7 +107,7 @@ several minutes to finish:
 If you want to compile Skia for Apple Silicon (e.g. M1), you have to
 specify the `arm64` CPU architecture:
 
-    gn gen out/Release-arm64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false skia_use_partition_alloc=false skia_enable_pdf=false target_cpu=\"arm64\" extra_cflags=[\"-stdlib=libc++\", \"-mmacosx-version-min=11.0\"] extra_cflags_cc=[\"-frtti\"]"
+    gn gen out/Release-arm64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_freetype=true skia_use_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false skia_use_partition_alloc=false skia_enable_pdf=false skia_use_metal=true target_cpu=\"arm64\" extra_cflags=[\"-stdlib=libc++\", \"-mmacosx-version-min=11.0\"] extra_cflags_cc=[\"-frtti\"]"
     ninja -C out/Release-arm64 skia modules
 
 ## Skia on Linux
